@@ -30,6 +30,7 @@ class CatsController < ApplicationController
   end
 
   def update
+    @cat.assign_attributes(cat_params) 
     respond_to do |format|
       if @cat.public_send("#{event}!")
         format.html { redirect_to @cat, notice: "#{@cat.name} is #{@cat.aasm_state}!" }

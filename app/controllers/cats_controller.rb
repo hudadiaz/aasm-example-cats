@@ -48,7 +48,7 @@ class CatsController < ApplicationController
     name = @cat.name
     @cat.destroy
     respond_to do |format|
-      format.html { redirect_to cats_url, warning: "#{name} was successfully destroyed." }
+      format.html { redirect_to cats_url, warning: "#{name} has been slained." }
       format.json { head :no_content }
     end
   end

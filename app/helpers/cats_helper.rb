@@ -5,8 +5,8 @@ module CatsHelper
       'info'
     when 'playing'
       'primary'
-    when 'tired'
-      'gray'
+    when 'idle'
+      'light'
     when 'sleeping'
       'dark'
     else

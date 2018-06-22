@@ -1,18 +1,24 @@
 <% if notice.present? %>
   <div id="notice" class="alert alert-info"><%= notice %></div>
 <% end %>
+<% if warning.present? %>
+  <div id="warning" class="alert alert-warning"><%= warning %></div>
+<% end %>
+<% if error.present? %>
+  <div id="error" class="alert alert-danger"><%= error %></div>
+<% end %>
 
 <h1>
   <%= @cat.name %>
+  <span class="badge badge-<%= status_class @cat.aasm_state %>">
+    <%= @cat.aasm_state.humanize %>
+  </span>
+
+  <span class="badge badge-pill badge-<%= stamina_class @cat.stamina %>">
+    <%= @cat.stamina %>
+  </span>
 </h1>
 
-<div class="badge badge-info">
-  <%= @cat.aasm_state.humanize %>
-</div>
-
-<div class="badge badge-pill badge-info">
-  <%= @cat.stamina %>
-</div>
 
 <% if @cat.idle? %>
   <img src="https://media.giphy.com/media/IFqLbHaB5ABws/giphy.gif" alt="" class="w-100">
@@ -29,22 +35,22 @@
 <div class="mt-5">
   <%= form_with(model: @cat, local: true, class: 'd-inline') do |form| %>
     <%= form.hidden_field :event, value: :play %>
-    <%= form.submit 'Play', class: 'btn btn-primary' %>
+    <%= form.submit 'Play', class: "btn btn-#{event_class 'play'}", disabled: !@cat.may_play? %>
   <% end %>
   <%= form_with(model: @cat, local: true, class: 'd-inline') do |form| %>
     <%= form.hidden_field :event, value: :meow %>
-    <%= form.submit 'Meow', class: 'btn btn-info' %>
+    <%= form.submit 'Meow', class: "btn btn-#{event_class 'meow'}", disabled: !@cat.may_meow? %>
   <% end %>
   <%= form_with(model: @cat, local: true, class: 'd-inline') do |form| %>
     <%= form.hidden_field :event, value: :stop %>
-    <%= form.submit 'Stop', class: 'btn btn-light' %>
+    <%= form.submit 'Stop', class: "btn btn-#{event_class 'stop'}", disabled: !@cat.may_stop? %>
   <% end %>
   <%= form_with(model: @cat, local: true, class: 'd-inline') do |form| %>
     <%= form.hidden_field :event, value: :rest %>
-    <%= form.submit 'Sleep', class: 'btn btn-dark' %>
+    <%= form.submit 'Sleep', class: "btn btn-#{event_class 'rest'}", disabled: !@cat.may_rest? %>
   <% end %>
   <%= form_with(model: @cat, local: true, class: 'd-inline') do |form| %>
     <%= form.hidden_field :event, value: :wakeup %>
-    <%= form.submit 'Wakeup', class: 'btn btn-warning' %>
+    <%= form.submit 'Wakeup', class: "btn btn-#{event_class 'wakeup'}", disabled: !@cat.may_wakeup? %>
   <% end %>
 </div>

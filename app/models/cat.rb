@@ -10,35 +10,43 @@ class Cat < ApplicationRecord
     state :tired
     state :sleeping
 
-    event :meow, before: Proc.new { use_stamina(1) } do
-      transitions from: [:idle, :playing], to: :meowing, guard: :has_stamina?
+    event :meow, after: Proc.new { use_stamina(1) } do
+      transitions from: %i[idle playing],
+                  to: %i[meowing],
+                  guard: Proc.new { has_stamina?(1) }
     end
 
-    event :play, before: Proc.new { use_stamina(3) } do
-      transitions from: [:idle, :meowing], to: :playing, guard: :has_stamina?
+    event :play, after: Proc.new { use_stamina(3) } do
+      transitions from: %i[idle meowing],
+                  to: %i[playing],
+                  guard: Proc.new { has_stamina?(3) }
     end
 
     event :stop do
-      transitions from: [:meowing, :playing],
-                  to: :idle
+      transitions from: %i[meowing playing],
+                  to: %i[idle]
     end
 
     event :wakeup do
-      transitions from: :sleeping, to: :idle, after: :replenish_stamina
+      transitions from: %i[sleeping],
+                  to: %i[idle],
+                  after: %i[replenish_stamina]
     end
 
     event :rest do
-      transitions from: [:idle, :tired], to: :sleeping
+      transitions from: %i[idle meowing playing tired],
+                  to: %i[sleeping]
     end
   end
 
-  def has_stamina?
-    stamina >= 0
+  def has_stamina?(amount = 1)
+    return false if stamina.zero?
+    stamina >= amount
   end
 
-  def use_stamina(amount)
+  def use_stamina(amount = 1)
     self.stamina = stamina - amount
-    p "THIS IS AMERICA"
+    save
   end
 
   def replenish_stamina

@@ -20,7 +20,7 @@ class CatsController < ApplicationController
 
     respond_to do |format|
       if @cat.save
-        format.html { redirect_to @cat, notice: 'Cat was successfully created.' }
+        format.html { redirect_to @cat, notice: "#{@cat.name} was successfully created." }
         format.json { render :show, status: :created, location: @cat }
       else
         format.html { render :new }
@@ -32,21 +32,22 @@ class CatsController < ApplicationController
   def update
     respond_to do |format|
       if @cat.public_send("#{event}!")
-        format.html { redirect_to @cat, notice: "Cat successfully #{event}!" }
+        format.html { redirect_to @cat, notice: "#{@cat.name} is #{@cat.aasm_state}!" }
         format.json { render :show, status: :ok, location: @cat }
       end
     end
   rescue AASM::InvalidTransition
     respond_to do |format|
-      format.html { redirect_to @cat, notice: "Cat cannot #{event}." }
+      format.html { redirect_to @cat, error: "#{@cat.name} cannot #{event}." }
       format.json { render json: @cat.errors, status: :unprocessable_entity }
     end
   end
 
   def destroy
+    name = @cat.name
     @cat.destroy
     respond_to do |format|
-      format.html { redirect_to cats_url, notice: 'Cat was successfully destroyed.' }
+      format.html { redirect_to cats_url, warning: "#{name} was successfully destroyed." }
       format.json { head :no_content }
     end
   end

@@ -63,6 +63,6 @@ class CatsController < ApplicationController
     end
 
     def event
-      params.require(:cat).fetch(:event)
+      params.require(:cat).fetch(:event, 'save')
     end
 end

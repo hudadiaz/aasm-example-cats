@@ -7,7 +7,6 @@ class Cat < ApplicationRecord
     state :idle, initial: true
     state :meowing
     state :playing
-    state :tired
     state :sleeping
 
     event :meow, after: Proc.new { use_stamina(1) } do
@@ -34,7 +33,7 @@ class Cat < ApplicationRecord
     end
 
     event :rest do
-      transitions from: %i[idle meowing playing tired],
+      transitions from: %i[idle meowing playing],
                   to: %i[sleeping]
     end
   end
